@@ -1,0 +1,439 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "1a45aae0592d2eb92b912e2fa4a6a334",
+    "entities": [
+      {
+        "tableName": "usuario",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idUsuario` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `nome` TEXT NOT NULL, `cargo` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "idUsuario",
+            "columnName": "idUsuario",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nome",
+            "columnName": "nome",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cargo",
+            "columnName": "cargo",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "idUsuario"
+          ]
+        }
+      },
+      {
+        "tableName": "obra",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idObra` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `nome` TEXT NOT NULL, `endereco` TEXT NOT NULL, `dataInicio` INTEGER NOT NULL, `dataPrevisaoTermino` INTEGER, `area` REAL, `status` TEXT NOT NULL, `idResponsavel` INTEGER, FOREIGN KEY(`idResponsavel`) REFERENCES `usuario`(`idUsuario`) ON UPDATE NO ACTION ON DELETE SET NULL )",
+        "fields": [
+          {
+            "fieldPath": "idObra",
+            "columnName": "idObra",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nome",
+            "columnName": "nome",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "endereco",
+            "columnName": "endereco",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dataInicio",
+            "columnName": "dataInicio",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dataPrevisaoTermino",
+            "columnName": "dataPrevisaoTermino",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "area",
+            "columnName": "area",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "status",
+            "columnName": "status",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "idResponsavel",
+            "columnName": "idResponsavel",
+            "affinity": "INTEGER"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "idObra"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_obra_idResponsavel",
+            "unique": false,
+            "columnNames": [
+              "idResponsavel"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_obra_idResponsavel` ON `${TABLE_NAME}` (`idResponsavel`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "usuario",
+            "onDelete": "SET NULL",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "idResponsavel"
+            ],
+            "referencedColumns": [
+              "idUsuario"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "registro_diario",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idRegistro` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `idObra` INTEGER NOT NULL, `idUsuario` INTEGER NOT NULL, `data` INTEGER NOT NULL, `turno` TEXT NOT NULL, `observacoes` TEXT, FOREIGN KEY(`idObra`) REFERENCES `obra`(`idObra`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`idUsuario`) REFERENCES `usuario`(`idUsuario`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "idRegistro",
+            "columnName": "idRegistro",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "idObra",
+            "columnName": "idObra",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "idUsuario",
+            "columnName": "idUsuario",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "data",
+            "columnName": "data",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "turno",
+            "columnName": "turno",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "observacoes",
+            "columnName": "observacoes",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "idRegistro"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_registro_diario_idObra",
+            "unique": false,
+            "columnNames": [
+              "idObra"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_registro_diario_idObra` ON `${TABLE_NAME}` (`idObra`)"
+          },
+          {
+            "name": "index_registro_diario_idUsuario",
+            "unique": false,
+            "columnNames": [
+              "idUsuario"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_registro_diario_idUsuario` ON `${TABLE_NAME}` (`idUsuario`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "obra",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "idObra"
+            ],
+            "referencedColumns": [
+              "idObra"
+            ]
+          },
+          {
+            "table": "usuario",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "idUsuario"
+            ],
+            "referencedColumns": [
+              "idUsuario"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "atividade",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idAtividade` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `idRegistro` INTEGER NOT NULL, `descricao` TEXT NOT NULL, `status` TEXT NOT NULL, FOREIGN KEY(`idRegistro`) REFERENCES `registro_diario`(`idRegistro`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "idAtividade",
+            "columnName": "idAtividade",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "idRegistro",
+            "columnName": "idRegistro",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "descricao",
+            "columnName": "descricao",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "status",
+            "columnName": "status",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "idAtividade"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_atividade_idRegistro",
+            "unique": false,
+            "columnNames": [
+              "idRegistro"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_atividade_idRegistro` ON `${TABLE_NAME}` (`idRegistro`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "registro_diario",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "idRegistro"
+            ],
+            "referencedColumns": [
+              "idRegistro"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "foto",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idFoto` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `idRegistro` INTEGER NOT NULL, `caminhoArquivo` TEXT NOT NULL, `legenda` TEXT, `data` INTEGER NOT NULL, FOREIGN KEY(`idRegistro`) REFERENCES `registro_diario`(`idRegistro`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "idFoto",
+            "columnName": "idFoto",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "idRegistro",
+            "columnName": "idRegistro",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "caminhoArquivo",
+            "columnName": "caminhoArquivo",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "legenda",
+            "columnName": "legenda",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "data",
+            "columnName": "data",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "idFoto"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_foto_idRegistro",
+            "unique": false,
+            "columnNames": [
+              "idRegistro"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_foto_idRegistro` ON `${TABLE_NAME}` (`idRegistro`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "registro_diario",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "idRegistro"
+            ],
+            "referencedColumns": [
+              "idRegistro"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "funcionario",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idFuncionario` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `nome` TEXT NOT NULL, `funcao` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "idFuncionario",
+            "columnName": "idFuncionario",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nome",
+            "columnName": "nome",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "funcao",
+            "columnName": "funcao",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "idFuncionario"
+          ]
+        }
+      },
+      {
+        "tableName": "registro_diario_conta_funcionario",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idRegistro` INTEGER NOT NULL, `idFuncionario` INTEGER NOT NULL, PRIMARY KEY(`idRegistro`, `idFuncionario`), FOREIGN KEY(`idRegistro`) REFERENCES `registro_diario`(`idRegistro`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`idFuncionario`) REFERENCES `funcionario`(`idFuncionario`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "idRegistro",
+            "columnName": "idRegistro",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "idFuncionario",
+            "columnName": "idFuncionario",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "idRegistro",
+            "idFuncionario"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_registro_diario_conta_funcionario_idRegistro",
+            "unique": false,
+            "columnNames": [
+              "idRegistro"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_registro_diario_conta_funcionario_idRegistro` ON `${TABLE_NAME}` (`idRegistro`)"
+          },
+          {
+            "name": "index_registro_diario_conta_funcionario_idFuncionario",
+            "unique": false,
+            "columnNames": [
+              "idFuncionario"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_registro_diario_conta_funcionario_idFuncionario` ON `${TABLE_NAME}` (`idFuncionario`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "registro_diario",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "idRegistro"
+            ],
+            "referencedColumns": [
+              "idRegistro"
+            ]
+          },
+          {
+            "table": "funcionario",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "idFuncionario"
+            ],
+            "referencedColumns": [
+              "idFuncionario"
+            ]
+          }
+        ]
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1a45aae0592d2eb92b912e2fa4a6a334')"
+    ]
+  }
+}
