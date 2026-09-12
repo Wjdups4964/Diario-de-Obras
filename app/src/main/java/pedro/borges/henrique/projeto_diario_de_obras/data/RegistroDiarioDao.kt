@@ -31,4 +31,22 @@ interface RegistroDiarioDao {
 
     @Query("SELECT * FROM registro_diario WHERE idUsuario = :idUsuario ORDER BY data DESC")
     fun listarPorUsuario(idUsuario: Long): Flow<List<RegistroDiario>>
+
+    /** Registros de uma obra dentro de um intervalo de datas (epoch millis), ordenados por data. */
+    @Query(
+        """
+        SELECT * FROM registro_diario
+        WHERE idObra = :idObra AND data BETWEEN :inicio AND :fim
+        ORDER BY data DESC
+        """
+    )
+    fun listarPorObraEIntervalo(idObra: Long, inicio: Long, fim: Long): Flow<List<RegistroDiario>>
+
+    /** Quantidade de registros diários já lançados para uma obra (útil pra tela de detalhes da obra). */
+    @Query("SELECT COUNT(*) FROM registro_diario WHERE idObra = :idObra")
+    fun contarPorObra(idObra: Long): Flow<Int>
+
+    /** O registro mais recente de uma obra (ex.: pra mostrar "último lançamento" na lista de obras). */
+    @Query("SELECT * FROM registro_diario WHERE idObra = :idObra ORDER BY data DESC LIMIT 1")
+    suspend fun buscarUltimoDaObra(idObra: Long): RegistroDiario?
 }

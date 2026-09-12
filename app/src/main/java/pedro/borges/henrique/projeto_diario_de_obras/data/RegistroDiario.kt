@@ -6,7 +6,13 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 
 /**
- * Registro_Diario(id_registro, id_obra FK, id_usuario FK, data, turno, observacoes)
+ * Registro_Diario(id_registro, id_obra FK, id_usuario FK, data, turno, clima,
+ * numero_trabalhadores, observacoes)
+ *
+ * OBS: [clima] e [numeroTrabalhadores] foram adicionados aqui (não estavam no modelo
+ * lógico original) para atender ao wireframe da tela "Cadastro de Registro Diário"
+ * definido no Dia 1 e ao README do projeto, que preveem registro de clima e nº de
+ * trabalhadores presentes.
  *
  * Excluir a Obra remove seus registros (CASCADE).
  * Excluir o Usuario que fez o registro também remove o registro (CASCADE), já que o
@@ -37,5 +43,7 @@ data class RegistroDiario(
     val idUsuario: Long,
     val data: Long,
     val turno: String,
+    val clima: String? = null,
+    val numeroTrabalhadores: Int? = null,
     val observacoes: String? = null
 )

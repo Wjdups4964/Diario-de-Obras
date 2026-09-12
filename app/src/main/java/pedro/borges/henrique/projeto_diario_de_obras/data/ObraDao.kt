@@ -27,4 +27,16 @@ interface ObraDao {
 
     @Query("SELECT * FROM obra WHERE status = :status ORDER BY dataInicio DESC")
     fun listarPorStatus(status: String): Flow<List<Obra>>
+
+    /** Busca por nome (para a barra de pesquisa da tela de Lista de Obras). */
+    @Query("SELECT * FROM obra WHERE nome LIKE '%' || :termo || '%' ORDER BY nome ASC")
+    fun buscarPorNome(termo: String): Flow<List<Obra>>
+
+    /** Obras sob responsabilidade de um usuário específico. */
+    @Query("SELECT * FROM obra WHERE idResponsavel = :idUsuario ORDER BY dataInicio DESC")
+    fun listarPorResponsavel(idUsuario: Long): Flow<List<Obra>>
+
+    /** Contagem total de obras (útil para dashboards/telas de resumo). */
+    @Query("SELECT COUNT(*) FROM obra")
+    fun contarTodas(): Flow<Int>
 }
